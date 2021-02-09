@@ -3,7 +3,7 @@ import schedule
 import browser_manager
 
 def setup_schedule():
-    scheduleMeeting("friday", "21:20", "21:22", "https://meet.google.com/jqn-fgav-aad")
+    scheduleMeeting("today", "08:29", "08:35", "https://meet.google.com/wys-xcee-kmi")
 
 
 def scheduleMeeting(day, startHour, endHour, link):
@@ -28,3 +28,6 @@ def scheduleMeeting(day, startHour, endHour, link):
     elif str(day).lower() == "sunday":
         schedule.every().sunday.at(startHour).do(browser_manager.joinMeeting, link)
         schedule.every().sunday.at(endHour).do(browser_manager.hangUpMeeting)
+    elif str(day).lower() == "today":
+        schedule.every().day.at(startHour).do(browser_manager.joinMeeting, link)
+        schedule.every().day.at(endHour).do(browser_manager.hangUpMeeting)
