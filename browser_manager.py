@@ -13,12 +13,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
 import time as t
+from utils import *
 
-
-G_ACCOUNT_MAIL = None
-G_ACCOUNT_PASS = None
-
-FIREFOX_DVD_DIR = "/usr/bin/geckodriver"
 
 '''Locating by xpath here is the best thing to do here, since google Meet changes selectors, classes name and all that sort of stuff for every meeting
     XPaths remaing the same, but a slight change by them would make this program fail.
@@ -43,14 +39,9 @@ CHAT_CLOSE_BTN_XPATH = '/html/body/div[1]/c-wiz/div[1]/div/div[6]/div[3]/div[3]/
 browser = None
 
 def initFirefox():
-    global browser, G_ACCOUNT_MAIL, G_ACCOUNT_PASS
+    global browser
 
-    print("Input your google account credentials. The information will not be stored anywhere and you will have to relogin everytime you restart this bot\n")
-    G_ACCOUNT_MAIL = input("Type your email: ")
-    G_ACCOUNT_PASS = input("Type your password: ")
-
-    #webdriver.FirefoxProfile('/home/emamaker/Documents/Projects/GoogleMeetBot/firefox_profile')
-    browser = webdriver.Firefox()
+    browser = webdriver.Firefox(firefox_profile=webdriver.FirefoxProfile(FIREFOX_PROFILE), executable_path=FIREFOX_DVD_DIR)
 
 def joinMeeting(link):
     global browser
@@ -102,36 +93,9 @@ def checkStarted():
         return False
     return True
 
-def loginIntoGoogle():
-    global browser
-    browser.get("https://myaccount.google.com/?utm_source=sign_in_no_continue")
-    t.sleep(3)
-    #we can use selectors in this webside, since they're static
-    #login button
-    clickButton(By.CSS_SELECTOR, "li.h-c-header__cta-li:nth-child(2) > a:nth-child(1)")
-    #login with google
-    #clickButton(By.CSS_SELECTOR, "button.s-btn__icon:nth-child(1)")
-    #write email
-    writeText(By.CSS_SELECTOR, "#identifierId", G_ACCOUNT_MAIL)
-    t.sleep(3)
-    #write pwd
-    writeText(By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[1]/div[1]/div/div/div/div/div[1]/div/div[1]/input", G_ACCOUNT_PASS)
-    t.sleep(3)
-
-def loginIntoGoogleWithStackOverflow():
-    global browser
-    browser.get("https://stackoverflow.com/users/login?ssrc=head&returnurl=https%3a%2f%2fstackoverflow.com%2f")
-    t.sleep(3)
-    #we can use selectors in this webside, since they're static
-    #login with google
-    clickButton(By.CSS_SELECTOR, "#openid-buttons > button.grid--cell.s-btn.s-btn__icon.s-btn__google.bar-md.ba.bc-black-100")
-    #login button
-    #write email
-    writeText(By.CSS_SELECTOR, "#identifierId", G_ACCOUNT_MAIL)
-    t.sleep(3)
-    #write pwd
-    writeText(By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[1]/div[1]/div/div/div/div/div[1]/div/div[1]/input", G_ACCOUNT_PASS)
-    t.sleep(3)
-
 def hangUpMeeting():
-    clickButton(By.XPATH, HANG_UP_BTN_XPATH)
+    try:
+        clickButton(By.XPATH, HANG_UP_BTN_XPATH)
+    except:
+        return False
+    return True
